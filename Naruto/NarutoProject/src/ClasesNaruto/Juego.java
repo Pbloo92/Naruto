@@ -1,0 +1,94 @@
+package ClasesNaruto;
+
+import java.util.*;
+
+public class Juego {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        BaseDatos db = new BaseDatos();
+
+        System.out.println("=== ELIGE TU PROPIA AVENTURA ===");
+
+        int usuarioId = -1;
+        String nombreUsuario = "";
+
+        while (usuarioId == -1) {
+            System.out.print("\n¿Tienes cuenta? (s/n): ");
+            String opcion = sc.nextLine();
+
+            System.out.print("Nombre de usuario: ");
+            nombreUsuario = sc.nextLine();
+
+            System.out.print("Contraseña: ");
+            String contrasena = sc.nextLine();
+
+            if (opcion.equalsIgnoreCase("s")) {
+                usuarioId = db.login(nombreUsuario, contrasena);
+                if (usuarioId == -1) {
+                    System.out.println("⚠️ Usuario o contraseña incorrectos.");
+                }
+            } else {
+                boolean registrado = db.registrarUsuario(nombreUsuario, contrasena);
+                if (registrado) {
+                    usuarioId = db.login(nombreUsuario, contrasena);
+                    System.out.println("✅ Usuario registrado con éxito.");
+                }
+            }
+        }
+
+        // Crear jugador
+        Jugador jugador = new Jugador(nombreUsuario);
+        jugador.añadirAtaque(new Ataque("Rasengan", 30, 15, 0));
+        jugador.añadirAtaque(new Ataque("Shuriken", 20, 10, 0));
+        jugador.añadirAtaque(new Ataque("Clones de sombra", 25, 12, 0));
+
+        // Crear enemigo
+        Enemigo enemigo = new Enemigo("Orochimaru", "Humano", 100);
+        enemigo.añadirAtaque(new Ataque("Serpientes letales", 25, 10, 0));
+        enemigo.añadirAtaque(new Ataque("Conjuro oscuro", 30, 15, 0));
+        enemigo.añadirAtaque(new Ataque("Veneno", 20, 10, 0));
+
+        // Escenario
+        Escenario escenario = new Escenario("Bosque del Dolor", "lluvia", "noche", "rocoso");
+
+        // Iniciar combate
+        Batalla batalla = new Batalla(jugador, enemigo, escenario);
+        batalla.iniciar();
+
+        // Enigma
+        if (jugador.getVida() > 0) {
+            Enigma enigma = new Enigma(
+                "Oro parece, plata no es. ¿Qué es?",
+                "plátano",
+                25
+            );
+            System.out.println("\nHas encontrado un enigma:");
+            System.out.println(enigma.getPregunta());
+            System.out.print("Tu respuesta: ");
+            String respuesta = sc.nextLine();
+            if (enigma.comprobarRespuesta(respuesta)) {
+                jugador.incrementarPuntos(enigma.getPuntos());
+                System.out.println("✅ Correcto. Ganas " + enigma.getPuntos() + " puntos.");
+            } else {
+                System.out.println("❌ Incorrecto. No ganas puntos.");
+            }
+        }
+
+        // Mostrar puntuación
+        System.out.println("\n🏁 Puntuación final de " + jugador.getNombre() + ": " + jugador.getPuntuacion() + " puntos.");
+
+        // Guardar puntuación
+        db.guardarPuntuacion(usuarioId, jugador.getPuntuacion());
+
+        // Mostrar ranking
+        System.out.println("\n¿Deseas ver el ranking? (s/n): ");
+        String verRanking = sc.nextLine();
+        if (verRanking.equalsIgnoreCase("s")) {
+            db.mostrarMejorJugador();
+            db.mostrarTop();
+        }
+
+        System.out.println("\nGracias por jugar. ¡Hasta la próxima!");
+    }
+}
