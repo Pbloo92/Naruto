@@ -1,0 +1,31 @@
+package ClasesNaruto;
+
+import java.util.Random;
+
+public class Enemigo {
+    String nombre;
+    int vida;
+    int ataque;
+
+    public Enemigo(String nombre, int vida, int ataque) {
+        this.nombre = nombre;
+        this.vida = vida;
+        this.ataque = ataque;
+    }
+
+    public void atacar(Personaje jugador) {
+        Random rand = new Random();
+        int danio = rand.nextInt(ataque) + 1;
+        jugador.recibirDanio(danio);
+        System.out.println(nombre + " atacó con " + danio + " de daño!");
+    }
+
+    public void recibirDanio(int danio) {
+        vida -= danio;
+        System.out.println(nombre + " recibió " + danio + " de daño. Vida restante: " + vida);
+    }
+
+    public boolean estaVivo() {
+        return vida > 0;
+    }
+}

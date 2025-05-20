@@ -1,0 +1,41 @@
+package ClasesNaruto;
+
+public class Personaje {
+    String nombre;
+    int vida;
+    int chakra;
+    String[] ataques;
+    int[] danios;
+    int[] chakraCostes;
+
+    public Personaje(String nombre, int vida, int chakra, String[] ataques, int[] danios, int[] chakraCostes) {
+        this.nombre = nombre;
+        this.vida = vida;
+        this.chakra = chakra;
+        this.ataques = ataques;
+        this.danios = danios;
+        this.chakraCostes = chakraCostes;
+    }
+
+    public boolean atacar(Enemigo enemigo, int opcion) {
+        if (opcion < 1 || opcion >= ataques.length) return false;
+        if (chakra < chakraCostes[opcion]) {
+            System.out.println("No tienes suficiente chakra para usar " + ataques[opcion]);
+            return false;
+        }
+        chakra -= chakraCostes[opcion];
+        enemigo.recibirDanio(danios[opcion]);
+        System.out.println(nombre + " usó " + ataques[opcion] + " e hizo " + danios[opcion] + " de daño!");
+        return true;
+    }
+
+    public void recibirDanio(int danio) {
+        vida -= danio;
+        System.out.println(nombre + " recibió " + danio + " de daño. Vida restante: " + vida);
+    }
+
+    public boolean estaVivo() {
+        return vida > 0;
+    }
+}
+

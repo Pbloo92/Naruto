@@ -1,0 +1,38 @@
+package ClasesNaruto;
+
+import java.util.Scanner;
+
+public class Combate {
+    private Personaje jugador;
+    private Enemigo enemigo;
+    private Scanner scanner;
+
+    public Combate(Personaje jugador, Enemigo enemigo, Scanner scanner) {
+        this.jugador = jugador;
+        this.enemigo = enemigo;
+        this.scanner = scanner;
+    }
+
+    public void iniciarCombate() {
+        System.out.println("\nComienza el combate contra " + enemigo.nombre + "!");
+        while (jugador.estaVivo() && enemigo.estaVivo()) {
+            System.out.println("\nElige tu ataque:");
+            for (int i = 1; i < jugador.ataques.length; i++) {
+                System.out.println(i + ". " + jugador.ataques[i] + " (Chakra: " + jugador.chakraCostes[i] + ")");
+            }
+            int opcion = scanner.nextInt();
+            scanner.nextLine();
+
+            boolean valido = jugador.atacar(enemigo, opcion);
+            if (enemigo.estaVivo() && valido) {
+                enemigo.atacar(jugador);
+            }
+        }
+
+        if (jugador.estaVivo()) {
+            System.out.println("\n¡Has ganado el combate!");
+        } else {
+            System.out.println("\nHas sido derrotado... Fin del juego.");
+        }
+    }
+}
