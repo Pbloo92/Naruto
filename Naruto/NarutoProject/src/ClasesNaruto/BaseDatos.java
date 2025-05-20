@@ -1,0 +1,150 @@
+package ClasesNaruto;
+
+import java.sql.*;
+
+public class BaseDatos {
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/naruto?useSSL=false&serverTimezone=UTC";
+    private static final String USER = "root"; // <-- Cambia esto si tu usuario es otro
+    private static final String PASS = ""; // <-- Pon tu contraseña de MySQL
+
+    public BaseDatos() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver"); // Asegura que el driver se cargue
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        crearTablas();
+    }
+
+    private void crearTablas() {
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             Statement stmt = conn.createStatement()) {
+
+            String usuarios = """
+                CREATE TABLE IF NOT EXISTS usuarios (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    nombre VARCHAR(100) UNIQUE NOT NULL,
+                    contrasena VARCHAR(100) NOT NULL
+                );
+            """;
+
+            String puntuaciones = """
+                CREATE TABLE IF NOT EXISTS puntuaciones (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    usuario_id INT,
+                    puntos INT,
+                    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+                );
+            """;
+
+            stmt.execute(usuarios);
+            stmt.execute(puntuaciones);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean registrarUsuario(String nombre, String contrasena) {
+        String sql = "INSERT INTO usuarios(nombre, contrasena) VALUES(?, ?)";
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, nombre);
+            pstmt.setString(2, contrasena);
+            pstmt.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            if (e.getMessage().contains("Duplicate entry")) {
+                System.out.println("Ese nombre de usuario ya existe.");
+            } else {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
+
+    public int login(String nombre, String contrasena) {
+        String sql = "SELECT id FROM usuarios WHERE nombre = ? AND contrasena = ?";
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, nombre);
+            pstmt.setString(2, contrasena);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            } else {
+                return -1;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public void guardarPuntuacion(int usuarioId, int puntos) {
+        String sql = "INSERT INTO puntuaciones(usuario_id, puntos) VALUES(?, ?)";
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, usuarioId);
+            pstmt.setInt(2, puntos);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mostrarTop() {
+        String sql = """
+            SELECT u.nombre, SUM(p.puntos) AS total
+            FROM puntuaciones p
+            JOIN usuarios u ON p.usuario_id = u.id
+            GROUP BY p.usuario_id
+            ORDER BY total DESC
+            LIMIT 3;
+        """;
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            System.out.println("\n--- TOP 3 JUGADORES ---");
+            while (rs.next()) {
+                System.out.println(rs.getString("nombre") + ": " + rs.getInt("total") + " puntos");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mostrarMejorJugador() {
+        String sql = """
+            SELECT u.nombre, SUM(p.puntos) AS total
+            FROM puntuaciones p
+            JOIN usuarios u ON p.usuario_id = u.id
+            GROUP BY p.usuario_id
+            ORDER BY total DESC
+            LIMIT 1;
+        """;
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                System.out.println("\n--- MEJOR JUGADOR ---");
+                System.out.println(rs.getString("nombre") + ": " + rs.getInt("total") + " puntos");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
