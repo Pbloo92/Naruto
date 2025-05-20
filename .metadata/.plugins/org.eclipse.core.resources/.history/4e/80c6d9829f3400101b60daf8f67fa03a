@@ -1,0 +1,55 @@
+package ClasesNaruto;
+
+import java.util.Scanner;
+
+public class Juego {
+    private Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        Juego juego = new Juego();
+        juego.iniciar();
+    }
+
+    public void iniciar() {
+        mostrarIntro();
+        if (!verificarContraseña()) return;
+        String nombrePersonaje = elegirPersonaje();
+        Personaje jugador = FabricaDePersonajes.crear(nombrePersonaje);
+
+        Enemigo enemigo = FabricaDeEnemigos.crear("Pain");
+        Combate combate = new Combate(jugador, enemigo, scanner);
+        combate.iniciarCombate();
+    }
+
+    private void mostrarIntro() {
+        System.out.println("* * * * * * * * * * * * * * * * * * * * * * ");
+        System.out.println("*              NARUTO GAME                * ");
+        System.out.println("*                                         * ");
+        System.out.println("*     Desarrolladores:                    * ");
+        System.out.println("*           Pablo, Roberto y Elena        * ");
+        System.out.println("*                                         * ");
+        System.out.println("* * * * * * * * * * * * * * * * * * * * * * ");
+    }
+
+    private boolean verificarContraseña() {
+        System.out.println("Introduce la contraseña para empezar:");
+        String clave = scanner.nextLine();
+
+        while (!clave.equals("jugones")) {
+            System.out.println("Contraseña incorrecta, prueba otra vez:");
+            clave = scanner.nextLine();
+        }
+
+        System.out.println("Contraseña correcta. COMIENZA EL JUEGO");
+        return true;
+    }
+
+    private String elegirPersonaje() {
+        String personaje = "";
+        do {
+            System.out.println("Elige tu personaje principal: Naruto, Sasuke o Gaara");
+            personaje = scanner.nextLine();
+        } while (!personaje.equals("Naruto") && !personaje.equals("Sasuke") && !personaje.equals("Gaara"));
+        return personaje;
+    }
+}

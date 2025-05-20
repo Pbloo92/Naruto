@@ -1,0 +1,56 @@
+package ClasesNaruto;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Jugador {
+    private String nombre;
+    private int vida;
+    private int chakra;
+    private int puntuacion;
+    private List<Ataque> ataques;
+
+    public Jugador(String nombre) {
+        this.nombre = nombre;
+        this.vida = 100;
+        this.chakra = 100;
+        this.puntuacion = 0;
+        this.ataques = new ArrayList<>();
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public int getVida() {
+        return vida;
+    }
+
+    public void recibirDaño(int daño) {
+        this.vida -= daño;
+    }
+
+    public void usarChakra(int cantidad) {
+        this.chakra -= cantidad;
+    }
+
+    public int getChakra() {
+        return chakra;
+    }
+
+    public void añadirAtaque(Ataque ataque) {
+        ataques.add(ataque);
+    }
+
+    public List<Ataque> getAtaques() {
+        return ataques;
+    }
+
+    public void incrementarPuntos(int puntos) {
+        puntuacion += puntos;
+    }
+
+    public int getPuntuacion() {
+        return puntuacion;
+    }
+}
