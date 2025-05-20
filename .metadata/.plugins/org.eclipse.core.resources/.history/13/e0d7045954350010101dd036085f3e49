@@ -15,7 +15,7 @@ public class Batalla {
 
     public void iniciar() {
         Random rand = new Random();
-        System.out.println("¡Comienza la batalla contra el" + enemigo.getNombre() + "!");
+        System.out.println("¡Comienza la batalla contra " + enemigo.getNombre() + "!");
         System.out.println("Escenario: " + escenario.getDescripcion());
 
         while (jugador.getVida() > 0 && enemigo.getVida() > 0) {

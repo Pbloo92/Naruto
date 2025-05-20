@@ -1,5 +1,2 @@
-INDEX VERSION 1.134+C:\Users\pm615\OneDrive\Escritorio\DAW\Programacion\gitKraken\Naruto\.metadata\.plugins\org.eclipse.jdt.core
-2687479238.index
-3694313658.index
-943755016.index
+INDEX VERSION 1.134+C:\Users\rober\OneDrive\Desktop\Naruto\.metadata\.plugins\org.eclipse.jdt.core
 1865797976.index
