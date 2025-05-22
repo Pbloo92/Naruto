@@ -114,6 +114,10 @@ public class Juego {
         Batalla batalla = new Batalla(jugador, enemigo, escenario);
         batalla.iniciar();
 
+        
+        
+        
+        
         // Enigma 1
         if (jugador.getVida() > 0) {
             Enigma enigma = new Enigma(

@@ -3,7 +3,7 @@ package ClasesNaruto;
 import java.sql.*;
 
 public class BaseDatos {
-	private static final String DB_URL = "jdbc:mysql://localhost:3306/naruto2?useSSL=false&serverTimezone=UTC";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/naruto?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root"; // <-- Cambia esto si tu usuario es otro
     private static final String PASS = ""; // <-- Pon tu contraseña de MySQL
 
